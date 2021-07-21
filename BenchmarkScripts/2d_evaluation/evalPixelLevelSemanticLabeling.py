@@ -145,13 +145,13 @@ def getScoreAverage(scoreList):
 
 # Print intersection-over-union scores for all classes.
 def printClassScores(scoreList):
-    print 'classes          IoU'
-    print '----------------------------'
+    print('classes          IoU')
+    print('----------------------------')
     for i in range(len(VALID_CLASS_IDS)):
         label = VALID_CLASS_IDS[i]
         labelName = CLASS_LABELS[i]
         iouStr = "{0:>5.3f}".format(scoreList[labelName])
-        print ("{0:<14s}: ".format(labelName) + iouStr)
+        print("{0:<14s}: ".format(labelName) + iouStr)
 
 # Save results.
 def write_result_file(conf, scores, filename):
@@ -171,7 +171,7 @@ def write_result_file(conf, scores, filename):
             for c in range(len(VALID_CLASS_IDS)):
                 f.write('\t{0:>5.3f}'.format(conf[r,c]))
             f.write('\n')
-    print 'wrote results to', filename
+    print('wrote results to', filename)
 
 
 # Evaluate image lists pairwise.
@@ -182,7 +182,7 @@ def evaluateImgLists(predictionImgList, groundTruthImgList, outputFile):
     perImageStats = {}
     nbPixels      = 0
 
-    print 'Evaluating', len(predictionImgList), 'pairs of images...'
+    print('Evaluating', len(predictionImgList), 'pairs of images...')
 
     # Evaluate all pairs of images and save them into a matrix
     for i in range(len(predictionImgList)):
@@ -197,7 +197,7 @@ def evaluateImgLists(predictionImgList, groundTruthImgList, outputFile):
 
         sys.stdout.write("\rImages Processed: {}".format(i+1))
         sys.stdout.flush()
-    print ""
+    print("")
 
     # sanity check
     if confMatrix.sum() != nbPixels:
@@ -213,10 +213,10 @@ def evaluateImgLists(predictionImgList, groundTruthImgList, outputFile):
     # Print IOU scores
     printClassScores(classScoreList)
     iouAvgStr  = "{avg:5.3f}".format(avg=getScoreAverage(classScoreList))
-    print "--------------------------------"
-    print "Score Average : " + iouAvgStr
-    print "--------------------------------"
-    print ""
+    print("--------------------------------")
+    print("Score Average : " + iouAvgStr)
+    print("--------------------------------")
+    print("")
 
     # write result file
     write_result_file(confMatrix, classScoreList, outputFile)
@@ -228,12 +228,12 @@ def evaluatePair(predictionImgFileName, groundTruthImgFileName, confMatrix, perI
     try:
         predictionImg = Image.open(predictionImgFileName)
         predictionNp  = np.array(predictionImg)
-    except Exception, e:
+    except Exception as e:
         printError("Unable to load " + predictionImgFileName + ": " + str(e))
     try:
         groundTruthImg = Image.open(groundTruthImgFileName)
         groundTruthNp = np.array(groundTruthImg)
-    except Exception, e:
+    except Exception as e:
         printError("Unable to load " + groundTruthImgFileName + ": " + str(e))
 
     # Check for equal image sizes

@@ -20,7 +20,7 @@ import inspect
 try:
     import numpy as np
 except:
-    print "Failed to import numpy package."
+    print("Failed to import numpy package.")
     sys.exit(-1)
 try:
     import imageio
@@ -44,7 +44,7 @@ opt = parser.parse_args()
 
 def map_label_image(image, label_mapping):
     mapped = np.copy(image)
-    for k,v in label_mapping.iteritems():
+    for k,v in label_mapping.items():
         mapped[image==k] = v
     return mapped.astype(np.uint8)
 
@@ -80,8 +80,8 @@ def main():
     output_instance_image = make_instance_image(mapped_label, instance_image)
     imageio.imwrite(opt.output_file, output_instance_image)
     # uncomment to save out visualization
-    #util.visualize_instance_image(os.path.splitext(opt.output_file)[0] + '_vis.jpg', output_instance_image)
-    #util.visualize_instance_image(os.path.splitext(opt.output_file)[0] + '_vis-labels.jpg', get_labels_from_instance(output_instance_image))
+    # util.visualize_instance_image(os.path.splitext(opt.output_file)[0] + '_vis.jpg', output_instance_image)
+    # util.visualize_instance_image(os.path.splitext(opt.output_file)[0] + '_vis-labels.jpg', get_labels_from_instance(output_instance_image))
 
 
 if __name__ == '__main__':
