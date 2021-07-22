@@ -17,7 +17,7 @@ import inspect
 try:
     import numpy as np
 except:
-    print "Failed to import numpy package."
+    print("Failed to import numpy package.")
     sys.exit(-1)
 try:
     from itertools import izip
@@ -48,11 +48,11 @@ UNKNOWN_ID = np.max(VALID_CLASS_IDS) + 1
 def evaluate_scan(pred_file, gt_file, confusion):
     try:
         pred_ids = util_3d.load_ids(pred_file)
-    except Exception, e:
+    except Exception as e:
         util.print_error('unable to load ' + pred_file + ': ' + str(e))
     try:
         gt_ids = util_3d.load_ids(gt_file)
-    except Exception, e:
+    except Exception as e:
         util.print_error('unable to load ' + gt_file + ': ' + str(e))
     # sanity checks
     if not pred_ids.shape == gt_ids.shape:
@@ -78,7 +78,7 @@ def get_iou(label_id, confusion):
 
     denom = (tp + fp + fn)
     if denom == 0:
-        return float('nan')
+        return float('nan'), tp, denom
     return (float(tp) / denom, tp, denom)
 
 
@@ -101,19 +101,19 @@ def write_result_file(confusion, ious, filename):
             for c in range(len(VALID_CLASS_IDS)):
                 f.write('\t{0:>5.3f}'.format(confusion[VALID_CLASS_IDS[r],VALID_CLASS_IDS[c]]))
             f.write('\n')
-    print 'wrote results to', filename
+    print('wrote results to', filename)
 
 
 def evaluate(pred_files, gt_files, output_file):
     max_id = UNKNOWN_ID
     confusion = np.zeros((max_id+1, max_id+1), dtype=np.ulonglong)
 
-    print 'evaluating', len(pred_files), 'scans...'
+    print('evaluating', len(pred_files), 'scans...')
     for i in range(len(pred_files)):
         evaluate_scan(pred_files[i], gt_files[i], confusion)
         sys.stdout.write("\rscans processed: {}".format(i+1))
         sys.stdout.flush()
-    print ''
+    print('')
 
     class_ious = {}
     for i in range(len(VALID_CLASS_IDS)):
@@ -121,8 +121,8 @@ def evaluate(pred_files, gt_files, output_file):
         label_id = VALID_CLASS_IDS[i]
         class_ious[label_name] = get_iou(label_id, confusion)
     # print
-    print 'classes          IoU'
-    print '----------------------------'
+    print('classes          IoU')
+    print('----------------------------')
     for i in range(len(VALID_CLASS_IDS)):
         label_name = CLASS_LABELS[i]
         #print('{{0:<14s}: 1:>5.3f}'.format(label_name, class_ious[label_name][0]))

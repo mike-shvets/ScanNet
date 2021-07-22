@@ -15,7 +15,7 @@ import json
 try:
     import numpy as np
 except:
-    print "Failed to import numpy package."
+    print("Failed to import numpy package.")
     sys.exit(-1)
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -23,16 +23,6 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 import util
 import util_3d
-
-TASK_TYPES = {'label', 'instance'}
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--scan_path', required=True, help='path to scannet scene (e.g., data/ScanNet/v2/scene0000_00')
-parser.add_argument('--output_file', required=True, help='output file')
-parser.add_argument('--label_map_file', required=True, help='path to scannetv2-labels.combined.tsv')
-parser.add_argument('--type', required=True, help='task type [label or instance]')
-opt = parser.parse_args()
-assert opt.type in TASK_TYPES
 
 
 def read_aggregation(filename):
@@ -70,12 +60,12 @@ def read_segmentation(filename):
 
 
 def export(mesh_file, agg_file, seg_file, label_map_file, type, output_file):
-    label_map = util.read_label_mapping(opt.label_map_file, label_from='raw_category', label_to='nyu40id')
-    mesh_vertices = util_3d.read_mesh_vertices(mesh_file)
+    label_map = util.read_label_mapping(label_map_file, label_from='raw_category', label_to='nyu40id')
+    # mesh_vertices = util_3d.read_mesh_vertices(mesh_file)
     object_id_to_segs, label_to_segs = read_aggregation(agg_file)
     seg_to_verts, num_verts = read_segmentation(seg_file)
     label_ids = np.zeros(shape=(num_verts), dtype=np.uint32)     # 0: unannotated
-    for label, segs in label_to_segs.iteritems():
+    for label, segs in label_to_segs.items():
         label_id = label_map[label]
         for seg in segs:
             verts = seg_to_verts[seg]
@@ -84,7 +74,7 @@ def export(mesh_file, agg_file, seg_file, label_map_file, type, output_file):
         util_3d.export_ids(output_file, label_ids)
     elif type == 'instance':
         instance_ids = np.zeros(shape=(num_verts), dtype=np.uint32)  # 0: unannotated
-        for object_id, segs in object_id_to_segs.iteritems():
+        for object_id, segs in object_id_to_segs.items():
             for seg in segs:
                 verts = seg_to_verts[seg]
                 instance_ids[verts] = object_id
@@ -94,6 +84,16 @@ def export(mesh_file, agg_file, seg_file, label_map_file, type, output_file):
 
 
 def main():
+    TASK_TYPES = {'label', 'instance'}
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--scan_path', required=True, help='path to scannet scene (e.g., data/ScanNet/v2/scene0000_00')
+    parser.add_argument('--output_file', required=True, help='output file')
+    parser.add_argument('--label_map_file', required=True, help='path to scannetv2-labels.combined.tsv')
+    parser.add_argument('--type', required=True, help='task type [label or instance]')
+    opt = parser.parse_args()
+    assert opt.type in TASK_TYPES
+
     scan_name = os.path.split(opt.scan_path)[-1]
     mesh_file = os.path.join(opt.scan_path, scan_name + '_vh_clean_2.ply')
     agg_file = os.path.join(opt.scan_path, scan_name + '.aggregation.json')
