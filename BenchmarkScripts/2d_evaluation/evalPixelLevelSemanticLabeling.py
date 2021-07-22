@@ -255,12 +255,15 @@ def evaluatePair(predictionImgFileName, groundTruthImgFileName, confMatrix, perI
         # using cython
         confMatrix = addToConfusionMatrix.cEvaluatePair(predictionNp, groundTruthNp, confMatrix, VALID_CLASS_IDS.tolist())
     else:
-        # the slower python way
-        for (groundTruthImgPixel,predictionImgPixel) in izip(groundTruthImg.getdata(),predictionImg.getdata()):
-            if (not groundTruthImgPixel in VALID_CLASS_IDS):
-                printError("Unknown label with id {:}".format(groundTruthImgPixel))
+        # # the slower python way
+        # for (groundTruthImgPixel,predictionImgPixel) in izip(groundTruthImg.getdata(),predictionImg.getdata()):
+        #     # if (not groundTruthImgPixel in VALID_CLASS_IDS):
+        #     #     printError("Unknown label with id {:}".format(groundTruthImgPixel))
 
-            confMatrix[groundTruthImgPixel][predictionImgPixel] += 1
+        #     confMatrix[groundTruthImgPixel][predictionImgPixel] += 1
+        confMatrix += np.bincount(
+            confMatrix.shape[1] * groundTruthNp.reshape(-1).astype("uint16") + predictionNp.reshape(-1),
+            minlength=confMatrix.size).reshape(confMatrix.shape).astype("uint64")
     return nbPixels
 
 # The main method
