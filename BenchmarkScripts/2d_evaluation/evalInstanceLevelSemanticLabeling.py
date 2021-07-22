@@ -39,13 +39,13 @@ import json
 try:
     import numpy as np
 except:
-    print "Failed to import numpy package."
+    print("Failed to import numpy package.")
     sys.exit(-1)
 try:
     from PIL import Image
 except:
-    print "Please install the module 'Pillow' for image processing, e.g."
-    print "pip install pillow"
+    print("Please install the module 'Pillow' for image processing, e.g.")
+    print("pip install pillow")
     sys.exit(-1)
 
 from instances2dict import instances2dict
@@ -148,12 +148,12 @@ def getGtInstances(groundTruthList):
     gtInstances = {}
     # if there is a global statistics json, then load it
     if (os.path.isfile(opt.gtInstancesFile)):
-        print "Loading ground truth instances from JSON."
+        print("Loading ground truth instances from JSON.")
         with open(opt.gtInstancesFile) as json_file:
             gtInstances = json.load(json_file)
     # otherwise create it
     else:
-        print "Creating ground truth instances from png files."
+        print("Creating ground truth instances from png files.")
         gtInstances = instances2dict(groundTruthList, CLASS_LABELS, VALID_CLASS_IDS)
         writeDict2JSON(gtInstances, opt.gtInstancesFile)
 
@@ -171,7 +171,7 @@ def filterGtInstances(singleImageInstances):
 # match ground truth instances with predicted instances
 def matchGtWithPreds(predictionList,groundTruthList,gtInstances):
     matches = {}
-    print "Matching {} pairs of images...".format(len(predictionList))
+    print("Matching {} pairs of images...".format(len(predictionList)))
 
     count = 0
     for (pred,gt) in zip(predictionList,groundTruthList):
@@ -197,7 +197,7 @@ def matchGtWithPreds(predictionList,groundTruthList,gtInstances):
         count += 1
         sys.stdout.write("\rImages Processed: {}".format(count))
         sys.stdout.flush()
-    print ""
+    print("")
 
     return matches
 
@@ -519,18 +519,18 @@ def printResults(avgDict):
     col1    = ":" #(":"         if not opt.csv   else ")
     lineLen = 50
 
-    print ""
+    print("")
     #if not args.csv:
     #    print "#"*lineLen)
-    print "#"*lineLen
+    print("#"*lineLen)
     line  = ""
     line += "{:<15}".format("what"      ) + sep + col1
     line += "{:>15}".format("AP"        ) + sep
     line += "{:>15}".format("AP_50%"    ) + sep
-    print line
+    print(line)
     #if not args.csv:
     #    print "#"*lineLen)
-    print "#"*lineLen
+    print("#"*lineLen)
 
     for (lI,labelName) in enumerate(CLASS_LABELS):
         apAvg  = avgDict["classes"][labelName]["ap"]
@@ -538,19 +538,19 @@ def printResults(avgDict):
         line  = "{:<15}".format(labelName) + sep + col1
         line += sep + "{:>15.3f}".format(apAvg ) + sep
         line += sep + "{:>15.3f}".format(ap50o ) + sep
-        print line
+        print(line)
 
     allApAvg  = avgDict["allAp"]
     allAp50o  = avgDict["allAp50%"]
 
     #if not args.csv:
     #    print "-"*lineLen)
-    print "-"*lineLen
+    print("-"*lineLen)
     line  = "{:<15}".format("average") + sep + col1 
     line += "{:>15.3f}".format(allApAvg)  + sep 
     line += "{:>15.3f}".format(allAp50o)  + sep
-    print line
-    print ""
+    print(line)
+    print("")
 
 def prepareJSONDataForResults(avgDict, aps):
     JSONData = {}
@@ -622,8 +622,8 @@ def main(argv):
     #print gt_files
 
     # print some info for user
-    print "Note that this tool uses the file '{}' to cache the ground truth instances.".format(opt.gtInstancesFile)
-    print "If anything goes wrong, or if you change the ground truth, please delete the file."
+    print("Note that this tool uses the file '{}' to cache the ground truth instances.".format(opt.gtInstancesFile))
+    print("If anything goes wrong, or if you change the ground truth, please delete the file.")
 
     # evaluate
     evaluateImgLists(pred_files, gt_files)
