@@ -4,15 +4,15 @@ import json
 try:
     import numpy as np
 except:
-    print "Failed to import numpy package."
+    print("Failed to import numpy package.")
     sys.exit(-1)
 
 try:
     from plyfile import PlyData, PlyElement
 except:
-    print "Please install the module 'plyfile' for PLY i/o, e.g."
-    print "pip install plyfile"
-    sys.exit(-1)
+    print("Please install the module 'plyfile' for PLY i/o, e.g.")
+    print("pip install plyfile")
+    # sys.exit(-1)
 
 import util
 
@@ -67,10 +67,11 @@ def export_instance_ids_for_eval(filename, label_ids, instance_ids):
         for idx, inst_id in enumerate(insts):
             if inst_id == 0:  # 0 -> no instance for this vertex
                 continue
-            output_mask_file = os.path.join(output_mask_path_relative, name + '_' + str(idx) + '.txt')
+            output_mask_name =  name + '_' + str(idx) + '.txt'
+            output_mask_file = os.path.join(output_mask_path, output_mask_name)
             loc = np.where(instance_ids == inst_id)
             label_id = label_ids[loc[0][0]]
-            f.write('%s %d %f\n' % (output_mask_file, label_id, 1.0))
+            f.write('%s %d %f\n' % (output_mask_name, label_id, 1.0))
             # write mask
             mask = np.copy(zero_mask)
             mask[loc[0]] = 1
