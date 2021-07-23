@@ -129,6 +129,16 @@ def evaluate(pred_files, gt_files, output_file):
         print('{0:<14s}: {1:>5.3f}   ({2:>6d}/{3:<6d})'.format(label_name, class_ious[label_name][0], class_ious[label_name][1], class_ious[label_name][2]))
     write_result_file(confusion, class_ious, output_file)
 
+    miou = 0
+    cnt = 0
+    for i in range(len(VALID_CLASS_IDS)):
+        label_name = CLASS_LABELS[i]
+        if not np.isnan(class_ious[label_name][0]):
+            miou+= class_ious[label_name][0]
+            cnt += 1
+    miou /= cnt
+    print("mIoU = {:>5.3f} ({:>6d} valid classes)".format(miou, cnt))
+
 
 def main():
     pred_files = [f for f in os.listdir(opt.pred_path) if f.endswith('.txt') and f != 'semantic_label_evaluation.txt']
